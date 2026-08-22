@@ -1,9 +1,39 @@
-import { PrismaClient } from "@prisma/client";
+import "dotenv/config";
+import mongoose from "mongoose";
 
-const prisma = new PrismaClient();
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/hexa";
 
 async function main() {
   console.log("🌱 Seeding database...");
+
+  await mongoose.connect(MONGODB_URI);
+  console.log("Connected to MongoDB");
+
+  // Dynamically import models so they register with mongoose
+  const { User } = await import("../lib/models/User");
+  const { Service } = await import("../lib/models/Service");
+  const { Contact } = await import("../lib/models/Contact");
+  const { Project } = await import("../lib/models/Project");
+  const { Certificate } = await import("../lib/models/Certificate");
+  const { BlogPost } = await import("../lib/models/BlogPost");
+
+  // Seed Users
+  await User.create([
+    {
+      _id: "1",
+      email: "admin@hexa-bd.com",
+      name: "Admin",
+      password: "admin123",
+      role: "ADMIN",
+    },
+    {
+      _id: "2",
+      email: "editor@hexa-bd.com",
+      name: "Editor",
+      password: "editor123",
+      role: "EDITOR",
+    },
+  ]).catch(() => console.log("Users may already exist, skipping..."));
 
   // Seed Services
   const services = [
@@ -172,12 +202,12 @@ async function main() {
   ];
 
   for (const service of services) {
-    await prisma.service.upsert({
-      where: { slug: service.slug },
-      update: service,
-      create: service,
+    await Service.findOneAndUpdate({ slug: service.slug }, service, {
+      upsert: true,
+      returnDocument: 'after',
     });
   }
+  console.log("✅ Services seeded");
 
   // Seed Projects
   const projects = [
@@ -238,8 +268,127 @@ async function main() {
   ];
 
   for (const project of projects) {
-    await prisma.project.create({ data: project });
+    await Project.create(project).catch(() =>
+      console.log(`Project "${project.title}" may already exist, skipping...`)
+    );
   }
+  console.log("✅ Projects seeded");
+
+  // Seed Contacts
+  await Contact.create([
+    {
+      name: "Ahmed Rahman",
+      email: "ahmed@rahman-industries.com",
+      phone: "+8801712345678",
+      subject: "Energy Audit Inquiry",
+      message: "Interested in comprehensive energy audit for our textile mill.",
+      status: "READ",
+    },
+    {
+      name: "Fatima Khan",
+      email: "fatima@greenfield-pharma.com",
+      phone: "+8801819876543",
+      subject: "Safety Compliance",
+      message: "Requesting BNBC and NFPA compliance assessment.",
+      status: "PENDING",
+    },
+    {
+      name: "Mohammad Ali",
+      email: "mohammad@etp-solution.com",
+      phone: "+8801926543210",
+      subject: "ETP Design Request",
+      message: "Need ETP design for 500 KLD capacity garment factory.",
+      status: "REPLIED",
+    },
+    {
+      name: "Rahman Industries Ltd.",
+      email: "info@rahman.com",
+      phone: "+8801755551234",
+      subject: "Certificate Verification",
+      message: "Verifying energy audit certificate status.",
+      status: "READ",
+    },
+    {
+      name: "GreenField Pharmaceuticals",
+      email: "contact@greenfield.com",
+      phone: "+8801888888888",
+      subject: "Safety Training",
+      message: "Organizing safety training program for staff.",
+      status: "PENDING",
+    },
+    {
+      name: "Bangladesh Textile Mills",
+      email: "admin@btmills.com",
+      phone: "+8801666666666",
+      subject: "Carbon Accounting",
+      message: "Requesting carbon footprint assessment for RMG sector.",
+      status: "ARCHIVED",
+    },
+    {
+      name: "City Corporation",
+      email: "procurement@citycorp.gov.bd",
+      phone: "+8801555555555",
+      subject: "Solar PV Installation",
+      message: "Inquiry about 2MW rooftop solar system.",
+      status: "READ",
+    },
+    {
+      name: "Future Energy Ltd.",
+      email: "hello@futureenergy.com",
+      phone: "+8801444444444",
+      subject: "MEP Design",
+      message: "Looking for integrated MEP design consultancy.",
+      status: "PENDING",
+    },
+  ]).catch(() => console.log("Contacts may already exist, skipping..."));
+  console.log("✅ Contacts seeded");
+
+  // Seed Blog Posts
+  const blogPosts = [
+    {
+      title: "Top 5 Energy Saving Tips for Textile Mills",
+      slug: "top-5-energy-saving-tips",
+      excerpt: "Discover practical strategies to cut energy costs in textile manufacturing by up to 30%.",
+      category: "Energy Audit",
+      published: true,
+    },
+    {
+      title: "BNBC Compliance Checklist for Industrial Facilities",
+      slug: "bnbc-compliance-checklist",
+      excerpt: "A comprehensive guide to meeting Bangladesh National Building Code requirements.",
+      category: "Safety & Compliance",
+      published: true,
+    },
+    {
+      title: "How to Achieve LEED Certification in Bangladesh",
+      slug: "leed-certification-bangladesh",
+      excerpt: "Step-by-step roadmap for green building certification in the Bangladeshi context.",
+      category: "Sustainability",
+      published: true,
+    },
+    {
+      title: "ETP Design Best Practices for Garment Industry",
+      slug: "etp-design-best-practices",
+      excerpt: "Key considerations and modern approaches for designing effective effluent treatment plants.",
+      category: "ETP & STP",
+      published: true,
+    },
+    {
+      title: "Understanding Carbon Accounting: A Beginner's Guide",
+      slug: "carbon-accounting-beginners-guide",
+      excerpt: "Everything you need to know about measuring and reducing your organization's carbon footprint.",
+      category: "Carbon Accounting",
+      published: false,
+    },
+  ];
+
+  for (const post of blogPosts) {
+    await BlogPost.findOneAndUpdate({ slug: post.slug }, post, {
+      upsert: true,
+      returnDocument: 'after',
+    });
+  }
+  console.log("✅ Blog posts seeded");
 
   // Seed Certificates
   const certificates = [
@@ -250,7 +399,7 @@ async function main() {
       issueDate: new Date("2025-01-15"),
       expiryDate: new Date("2027-01-15"),
       type: "Energy Audit Certificate",
-      status: "ACTIVE" as const,
+      status: "ACTIVE",
     },
     {
       certId: "HEXA-2025-002",
@@ -259,17 +408,17 @@ async function main() {
       issueDate: new Date("2025-02-20"),
       expiryDate: new Date("2026-02-20"),
       type: "Safety Compliance Certificate",
-      status: "ACTIVE" as const,
+      status: "ACTIVE",
     },
   ];
 
   for (const cert of certificates) {
-    await prisma.certificate.upsert({
-      where: { certId: cert.certId },
-      update: cert,
-      create: cert,
+    await Certificate.findOneAndUpdate({ certId: cert.certId }, cert, {
+      upsert: true,
+      returnDocument: 'after',
     });
   }
+  console.log("✅ Certificates seeded");
 
   console.log("✅ Database seeded successfully!");
 }
@@ -280,5 +429,5 @@ main()
     process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    await mongoose.disconnect();
   });

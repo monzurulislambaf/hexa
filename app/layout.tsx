@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { cookies } from "next/headers";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { SITE_CONFIG } from "@/lib/constants";
@@ -70,13 +71,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+async function getThemeClass(): Promise<string> {
+  const cookieStore = await cookies();
+  const theme = cookieStore.get("theme")?.value;
+  if (theme === "dark") return "dark";
+  if (theme === "light") return "light";
+  return "light";
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const themeClass = await getThemeClass();
+
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} h-full antialiased`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} h-full antialiased ${themeClass}`}>
       <body className="min-h-full flex flex-col">
         <ThemeProvider
           attribute="class"

@@ -13,7 +13,7 @@ A modern, production-ready Next.js website for Hexa Engineering Limited, a premi
 - **Sliders:** Swiper.js
 - **Forms:** React Hook Form + Zod
 - **State:** Zustand
-- **Database:** PostgreSQL (Prisma ORM)
+- **Database:** MongoDB Atlas (Mongoose ODM)
 
 ## Features
 
@@ -47,11 +47,10 @@ cd hexa-engineering
 npm install
 
 # Set up environment variables
-cp .env.example .env.local
+cp .env.example .env
 
-# Initialize database (optional)
-npx prisma generate
-npx prisma db push
+# Seed database (optional, requires MongoDB)
+npm run db:seed
 
 # Run development server
 npm run dev
@@ -59,11 +58,11 @@ npm run dev
 
 ### Environment Variables
 
-Create a `.env.local` file:
+Create a `.env` file:
 
 ```env
-# Database (optional for demo)
-DATABASE_URL="postgresql://user:password@localhost:5432/hexa"
+# MongoDB Atlas
+MONGODB_URI="mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/hexa?retryWrites=true&w=majority"
 
 # Auth.js
 AUTH_SECRET="your-secret-here"
@@ -100,10 +99,17 @@ NEXT_PUBLIC_SITE_URL="https://hexa-bd.com"
 ├── lib/
 │   ├── constants.ts
 │   ├── data.ts
-│   ├── utils.ts
-│   └── auth.ts
-├── prisma/
-│   └── schema.prisma
+│   └── utils.ts
+│   └── mongodb.ts
+├── models/
+│   ├── User.ts
+│   ├── Contact.ts
+│   ├── Project.ts
+│   ├── BlogPost.ts
+│   ├── Certificate.ts
+│   └── Service.ts
+├── scripts/
+│   └── seed.ts
 └── public/
     └── images/
 ```
@@ -163,14 +169,8 @@ npm run lint     # Run ESLint
 ## Database Setup (Production)
 
 ```bash
-# Generate Prisma client
-npx prisma generate
-
-# Push schema to database
-npx prisma db push
-
-# (Optional) Open Prisma Studio
-npx prisma studio
+# Seed database with demo data
+npm run db:seed
 ```
 
 ## Contributing
