@@ -1,0 +1,9 @@
+⨯ Another next dev server is already running.
+
+- Local:        http://localhost:60680
+- PID:          1236
+- Dir:          C:\Users\Monzurul\Desktop\hexa
+- Log:          .next\dev\logs\next-development.log
+
+You can access the existing server at http://localhost:60680,
+or run taskkill /PID 1236 /F to stop it and start a new one.

@@ -1,36 +1,186 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hexa Engineering Limited - Corporate Website
+
+A modern, production-ready Next.js website for Hexa Engineering Limited, a premier engineering consultancy firm in Bangladesh specializing in energy efficiency, safety compliance, and sustainability.
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **UI Components:** shadcn/ui
+- **Icons:** Lucide React
+- **Animations:** Framer Motion
+- **Sliders:** Swiper.js
+- **Forms:** React Hook Form + Zod
+- **State:** Zustand
+- **Database:** PostgreSQL (Prisma ORM)
+
+## Features
+
+- 🎨 Modern, premium corporate design
+- 📱 Fully responsive (mobile-first)
+- ⚡ Server-side rendering & static generation
+- 🔍 SEO optimized (sitemap, robots.txt, metadata)
+- 🎯 Swiper.js sliders (Hero, Projects, Services, Testimonials)
+- 📝 Contact form with validation
+- 🔒 Admin dashboard with authentication
+- 📊 Certificate verification system
+- 🌙 Dark mode support
+- ♿ Accessibility friendly
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ (recommended: 20+)
+- npm, yarn, or pnpm
+- PostgreSQL database (optional for demo)
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/your-org/hexa-engineering.git
+cd hexa-engineering
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+
+# Initialize database (optional)
+npx prisma generate
+npx prisma db push
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env.local` file:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+# Database (optional for demo)
+DATABASE_URL="postgresql://user:password@localhost:5432/hexa"
 
-## Learn More
+# Auth.js
+AUTH_SECRET="your-secret-here"
 
-To learn more about Next.js, take a look at the following resources:
+# Site
+NEXT_PUBLIC_SITE_URL="https://hexa-bd.com"
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+├── app/
+│   ├── (pages)/
+│   │   ├── about/
+│   │   ├── services/
+│   │   ├── projects/
+│   │   ├── blog/
+│   │   ├── contact/
+│   │   ├── resources/
+│   │   └── certificate-verification/
+│   ├── admin/
+│   ├── api/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── sitemap.ts
+│   └── robots.ts
+├── components/
+│   ├── navbar/
+│   ├── footer/
+│   ├── sliders/
+│   ├── sections/
+│   ├── ui/
+│   └── animations/
+├── lib/
+│   ├── constants.ts
+│   ├── data.ts
+│   ├── utils.ts
+│   └── auth.ts
+├── prisma/
+│   └── schema.prisma
+└── public/
+    └── images/
+```
 
-## Deploy on Vercel
+## Pages
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Route | Description |
+|-------|-------------|
+| `/` | Homepage with hero, services, projects, testimonials |
+| `/about` | Company profile, mission, vision, values |
+| `/services` | All services overview |
+| `/services/energy-audit` | Energy Audit & Efficiency |
+| `/services/safety-compliance` | Safety & Regulatory Compliance |
+| `/services/sustainability` | Sustainability & Green Building |
+| `/services/etp-stp` | ETP & STP Solutions |
+| `/services/carbon-accounting` | Carbon Accounting |
+| `/projects` | Project portfolio |
+| `/blog` | Engineering articles |
+| `/contact` | Contact form & information |
+| `/resources` | PDF resources & guides |
+| `/certificate-verification` | Verify certificates |
+| `/admin` | Admin dashboard |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment to Vercel
+
+### Step 1: Push to GitHub
+
+```bash
+git add .
+git commit -m "Initial commit"
+git push origin main
+```
+
+### Step 2: Import to Vercel
+
+1. Go to [vercel.com](https://vercel.com)
+2. Click "New Project"
+3. Import your GitHub repository
+4. Configure environment variables
+5. Click "Deploy"
+
+### Step 3: Custom Domain (Optional)
+
+1. Go to Project Settings → Domains
+2. Add your custom domain
+3. Configure DNS records
+
+## Scripts
+
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run start    # Start production server
+npm run lint     # Run ESLint
+```
+
+## Database Setup (Production)
+
+```bash
+# Generate Prisma client
+npx prisma generate
+
+# Push schema to database
+npx prisma db push
+
+# (Optional) Open Prisma Studio
+npx prisma studio
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+© 2025 Hexa Engineering Limited. All rights reserved.
